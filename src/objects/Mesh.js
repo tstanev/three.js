@@ -113,7 +113,7 @@ THREE.Mesh.prototype.raycast = ( function () {
 				var stride = geometry.vb ? geometry.vbstride : 3;
                 var offsets = geometry.offsets;
 
-				if ( offsets.length === 0 ) {
+				if ( !offsets || offsets.length === 0 ) {
 
 					offsets = [ { start: 0, count: indices.length, index: 0 } ];
 
