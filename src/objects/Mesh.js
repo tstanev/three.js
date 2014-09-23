@@ -109,8 +109,9 @@ THREE.Mesh.prototype.raycast = ( function () {
 			if ( attributes.index !== undefined ) {
 
 				var indices = attributes.index.array;
-				var positions = attributes.position.array;
-				var offsets = geometry.offsets;
+				var positions = geometry.vb ? geometry.vb : attributes.position.array;
+				var stride = geometry.vb ? geometry.vbstride : 3;
+                var offsets = geometry.offsets;
 
 				if ( offsets.length === 0 ) {
 
@@ -131,19 +132,19 @@ THREE.Mesh.prototype.raycast = ( function () {
 						c = index + indices[ i + 2 ];
 
 						vA.set(
-							positions[ a * 3 ],
-							positions[ a * 3 + 1 ],
-							positions[ a * 3 + 2 ]
+							positions[ a * stride * 3 ],
+							positions[ a * stride * 3 + 1 ],
+							positions[ a * stride * 3 + 2 ]
 						);
 						vB.set(
-							positions[ b * 3 ],
-							positions[ b * 3 + 1 ],
-							positions[ b * 3 + 2 ]
+							positions[ b * stride * 3 ],
+							positions[ b * stride * 3 + 1 ],
+							positions[ b * stride * 3 + 2 ]
 						);
 						vC.set(
-							positions[ c * 3 ],
-							positions[ c * 3 + 1 ],
-							positions[ c * 3 + 2 ]
+							positions[ c * stride * 3 ],
+							positions[ c * stride * 3 + 1 ],
+							positions[ c * stride * 3 + 2 ]
 						);
 
 
@@ -182,7 +183,8 @@ THREE.Mesh.prototype.raycast = ( function () {
 
 			} else {
 
-				var positions = attributes.position.array;
+				var positions = geometry.vb ? geometry.vb : attributes.position.array;
+				var stride = geometry.vb ? geometry.vbstride : 3;
 
 				for ( var i = 0, j = 0, il = positions.length; i < il; i += 3, j += 9 ) {
 
@@ -191,19 +193,19 @@ THREE.Mesh.prototype.raycast = ( function () {
 					c = i + 2;
 
 					vA.set(
-						positions[ j ],
-						positions[ j + 1 ],
-						positions[ j + 2 ]
+						positions[ a * stride ],
+						positions[ a * stride + 1 ],
+						positions[ a * stride + 2 ]
 					);
 					vB.set(
-						positions[ j + 3 ],
-						positions[ j + 4 ],
-						positions[ j + 5 ]
+						positions[ b * stride ],
+						positions[ b * stride + 1 ],
+						positions[ b * stride + 2 ]
 					);
 					vC.set(
-						positions[ j + 6 ],
-						positions[ j + 7 ],
-						positions[ j + 8 ]
+						positions[ c * stride ],
+						positions[ c * stride + 1 ],
+						positions[ c * stride + 2 ]
 					);
 
 
