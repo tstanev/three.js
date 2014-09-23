@@ -2,3 +2,5 @@
 *.swp
 .project
 node_modules
+three.js.iml
+.idea/
