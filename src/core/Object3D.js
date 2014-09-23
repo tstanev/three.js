@@ -5,7 +5,7 @@
  * @author WestLangley / http://github.com/WestLangley
  */
 
-THREE.Object3D = function () {
+THREE.Object3D = function (skipModTerms) {
 
 	this.id = THREE.Object3DIdCount ++;
 	this.uuid = THREE.Math.generateUUID();
@@ -19,46 +19,52 @@ THREE.Object3D = function () {
 
 	var scope = this;
 
-	var position = new THREE.Vector3();
-	var rotation = new THREE.Euler();
-	var quaternion = new THREE.Quaternion();
-	var scale = new THREE.Vector3( 1, 1, 1 );
+    if (!skipModTerms) {
+        var position = new THREE.Vector3();
+        var rotation = new THREE.Euler();
+        var quaternion = new THREE.Quaternion();
+        var scale = new THREE.Vector3(1, 1, 1);
 
-	rotation.onChange( function () {
-		quaternion.setFromEuler( rotation, false );
-	} );
+        rotation.onChange(function () {
+            quaternion.setFromEuler(rotation, false);
+        });
 
-	quaternion.onChange( function () {
-		rotation.setFromQuaternion( quaternion, undefined, false );
-	} );
+        quaternion.onChange(function () {
+            rotation.setFromQuaternion(quaternion, undefined, false);
+        });
 
-	Object.defineProperties( this, {
-		position: {
-			enumerable: true,
-			value: position
-		},
-		rotation: {
-			enumerable: true,
-			value: rotation
-		},
-		quaternion: {
-			enumerable: true,
-			value: quaternion
-		},
-		scale: {
-			enumerable: true,
-			value: scale
-		},
-	} );
+        Object.defineProperties(this, {
+            position: {
+                enumerable: true,
+                value: position
+            },
+            rotation: {
+                enumerable: true,
+                value: rotation
+            },
+            quaternion: {
+                enumerable: true,
+                value: quaternion
+            },
+            scale: {
+                enumerable: true,
+                value: scale
+            },
+        });
+
+    	this.matrix = new THREE.Matrix4();
+    	this.matrixAutoUpdate = true;
+    }
+    else {
+        this.matrixAutoUpdate = false;
+        this.skipModTerms = true;
+    }
 
 	this.renderDepth = null;
 
 	this.rotationAutoUpdate = true;
 
-	this.matrix = new THREE.Matrix4();
 	this.matrixWorld = new THREE.Matrix4();
-
-	this.matrixAutoUpdate = true;
 	this.matrixWorldNeedsUpdate = false;
 
 	this.visible = true;
@@ -505,13 +511,14 @@ THREE.Object3D.prototype = {
 
 		if ( this.matrixWorldNeedsUpdate === true || force === true ) {
 
-			if ( this.parent === undefined ) {
+			if ( this.parent === undefined && this.matrix) {
 
 				this.matrixWorld.copy( this.matrix );
 
 			} else {
 
-				this.matrixWorld.multiplyMatrices( this.parent.matrixWorld, this.matrix );
+                if (this.matrix)
+                    this.matrixWorld.multiplyMatrices( this.parent.matrixWorld, this.matrix );
 
 			}
 
@@ -533,25 +540,28 @@ THREE.Object3D.prototype = {
 
 	clone: function ( object, recursive ) {
 
-		if ( object === undefined ) object = new THREE.Object3D();
+		if ( object === undefined ) object = new THREE.Object3D(this.skipModTerms);
 		if ( recursive === undefined ) recursive = true;
 
 		object.name = this.name;
 
-		object.up.copy( this.up );
+        if (!this.skipModTerms) {
+            object.up.copy(this.up);
 
-		object.position.copy( this.position );
-		object.quaternion.copy( this.quaternion );
-		object.scale.copy( this.scale );
+            object.position.copy(this.position);
+            object.quaternion.copy(this.quaternion);
+            object.scale.copy(this.scale);
 
-		object.renderDepth = this.renderDepth;
+            object.renderDepth = this.renderDepth;
 
-		object.rotationAutoUpdate = this.rotationAutoUpdate;
+            object.rotationAutoUpdate = this.rotationAutoUpdate;
 
-		object.matrix.copy( this.matrix );
+            object.matrix.copy(this.matrix);
+    		object.matrixAutoUpdate = this.matrixAutoUpdate;
+        }
+
 		object.matrixWorld.copy( this.matrixWorld );
 
-		object.matrixAutoUpdate = this.matrixAutoUpdate;
 		object.matrixWorldNeedsUpdate = this.matrixWorldNeedsUpdate;
 
 		object.visible = this.visible;

@@ -2,9 +2,9 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-THREE.Scene = function () {
+THREE.Scene = function (skipModTerms) {
 
-	THREE.Object3D.call( this );
+	THREE.Object3D.call( this, skipModTerms );
 
 	this.fog = null;
 	this.overrideMaterial = null;
