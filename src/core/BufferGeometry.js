@@ -5,9 +5,9 @@
 THREE.BufferGeometry = function () {
 
 	this.id = THREE.GeometryIdCount ++;
-	this.uuid = THREE.Math.generateUUID();
+	//this.uuid = THREE.Math.generateUUID();
 
-	this.name = '';
+	//this.name = '';
 
 	this.attributes = {};
 	this.drawcalls = [];

@@ -7164,18 +7164,19 @@ THREE.EventDispatcher.prototype = {
 THREE.Object3D = function (skipModTerms) {
 
 	this.id = THREE.Object3DIdCount ++;
-	this.uuid = THREE.Math.generateUUID();
+	//this.uuid = THREE.Math.generateUUID();
 
-	this.name = '';
+	//this.name = '';
 
 	this.parent = undefined;
-	this.children = [];
-
-	this.up = THREE.Object3D.DefaultUp.clone();
+	//this.children = [];
 
 	var scope = this;
 
     if (!skipModTerms) {
+
+		this.up = THREE.Object3D.DefaultUp.clone();
+
         var position = new THREE.Vector3();
         var rotation = new THREE.Euler();
         var quaternion = new THREE.Quaternion();
@@ -7210,6 +7211,7 @@ THREE.Object3D = function (skipModTerms) {
 
     	this.matrix = new THREE.Matrix4();
     	this.matrixAutoUpdate = true;
+		this.rotationAutoUpdate = true;
     }
     else {
         this.matrixAutoUpdate = false;
@@ -7217,8 +7219,6 @@ THREE.Object3D = function (skipModTerms) {
     }
 
 	this.renderDepth = null;
-
-	this.rotationAutoUpdate = true;
 
 	this.matrixWorld = new THREE.Matrix4();
 	this.matrixWorldNeedsUpdate = false;
@@ -7230,7 +7230,7 @@ THREE.Object3D = function (skipModTerms) {
 
 	this.frustumCulled = true;
 
-	this.userData = {};
+	//this.userData = {};
 
 };
 
@@ -7489,6 +7489,9 @@ THREE.Object3D.prototype = {
 			object.parent = this;
 			object.dispatchEvent( { type: 'added' } );
 
+			if (!this.children)
+				this.children = [];
+
 			this.children.push( object );
 
 			// add to scene
@@ -7564,6 +7567,9 @@ THREE.Object3D.prototype = {
 
 		callback( this );
 
+		if (!this.children)
+			return;
+
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
 			this.children[ i ].traverse( callback );
@@ -7578,6 +7584,9 @@ THREE.Object3D.prototype = {
 
 		callback( this );
 
+		if (!this.children)
+			return;
+
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
 			this.children[ i ].traverseVisible( callback );
@@ -7587,6 +7596,9 @@ THREE.Object3D.prototype = {
 	},
 
 	getObjectById: function ( id, recursive ) {
+
+		if (!this.children)
+			return undefined;
 
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
@@ -7617,6 +7629,9 @@ THREE.Object3D.prototype = {
 	},
 
 	getObjectByName: function ( name, recursive ) {
+
+		if (!this.children)
+			return undefined;
 
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
@@ -7686,9 +7701,13 @@ THREE.Object3D.prototype = {
 
 		// update children
 
-		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
+		if (this.children) {
 
-			this.children[ i ].updateMatrixWorld( force );
+			for (var i = 0, l = this.children.length; i < l; i++) {
+
+				this.children[ i ].updateMatrixWorld(force);
+
+			}
 
 		}
 
@@ -7727,9 +7746,10 @@ THREE.Object3D.prototype = {
 
 		object.frustumCulled = this.frustumCulled;
 
-		object.userData = JSON.parse( JSON.stringify( this.userData ) );
+		if (this.userData)
+			object.userData = JSON.parse( JSON.stringify( this.userData ) );
 
-		if ( recursive === true ) {
+		if ( recursive === true && this.children ) {
 
 			for ( var i = 0; i < this.children.length; i ++ ) {
 
@@ -8853,9 +8873,9 @@ THREE.Float64Attribute = function ( data, itemSize ) {
 THREE.BufferGeometry = function () {
 
 	this.id = THREE.GeometryIdCount ++;
-	this.uuid = THREE.Math.generateUUID();
+	//this.uuid = THREE.Math.generateUUID();
 
-	this.name = '';
+	//this.name = '';
 
 	this.attributes = {};
 	this.drawcalls = [];
@@ -15833,6 +15853,9 @@ THREE.Scene = function (skipModTerms) {
 
 	THREE.Object3D.call( this, skipModTerms );
 
+	if (!this.children)
+		this.children = [];
+
 	this.fog = null;
 	this.overrideMaterial = null;
 
@@ -15883,9 +15906,13 @@ THREE.Scene.prototype.__addObject = function ( object ) {
 	this.dispatchEvent( { type: 'objectAdded', object: object } );
 	object.dispatchEvent( { type: 'addedToScene', scene: this } );
 
-	for ( var c = 0; c < object.children.length; c ++ ) {
+	if (object.children) {
 
-		this.__addObject( object.children[ c ] );
+		for (var c = 0; c < object.children.length; c++) {
+
+			this.__addObject(object.children[ c ]);
+
+		}
 
 	}
 
@@ -15932,9 +15959,13 @@ THREE.Scene.prototype.__removeObject = function ( object ) {
 	this.dispatchEvent( { type: 'objectRemoved', object: object } );
 	object.dispatchEvent( { type: 'removedFromScene', scene: this } );
 
-	for ( var c = 0; c < object.children.length; c ++ ) {
+	if (object.children) {
 
-		this.__removeObject( object.children[ c ] );
+		for (var c = 0; c < object.children.length; c++) {
+
+			this.__removeObject(object.children[ c ]);
+
+		}
 
 	}
 

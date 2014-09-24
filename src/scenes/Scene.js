@@ -6,6 +6,9 @@ THREE.Scene = function (skipModTerms) {
 
 	THREE.Object3D.call( this, skipModTerms );
 
+	if (!this.children)
+		this.children = [];
+
 	this.fog = null;
 	this.overrideMaterial = null;
 
@@ -56,9 +59,13 @@ THREE.Scene.prototype.__addObject = function ( object ) {
 	this.dispatchEvent( { type: 'objectAdded', object: object } );
 	object.dispatchEvent( { type: 'addedToScene', scene: this } );
 
-	for ( var c = 0; c < object.children.length; c ++ ) {
+	if (object.children) {
 
-		this.__addObject( object.children[ c ] );
+		for (var c = 0; c < object.children.length; c++) {
+
+			this.__addObject(object.children[ c ]);
+
+		}
 
 	}
 
@@ -105,9 +112,13 @@ THREE.Scene.prototype.__removeObject = function ( object ) {
 	this.dispatchEvent( { type: 'objectRemoved', object: object } );
 	object.dispatchEvent( { type: 'removedFromScene', scene: this } );
 
-	for ( var c = 0; c < object.children.length; c ++ ) {
+	if (object.children) {
 
-		this.__removeObject( object.children[ c ] );
+		for (var c = 0; c < object.children.length; c++) {
+
+			this.__removeObject(object.children[ c ]);
+
+		}
 
 	}
 
