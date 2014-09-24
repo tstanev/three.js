@@ -45,11 +45,16 @@ THREE.DDSLoader.prototype = {
 						height: dds.height,
 						format: dds.format,
 						mipmaps: dds.mipmaps
-					}
+					};
 
 					loaded += 1;
 
 					if ( loaded === 6 ) {
+
+						//The default for Texture is Mip filter, which will fail if there are no mips
+						// And for DDS we do not auto-generate them.
+						if (dds.mipmapCount == 1)
+							texture.minFilter = THREE.LinearFilter;
 
 						texture.format = dds.format;
 						texture.needsUpdate = true;
@@ -60,7 +65,7 @@ THREE.DDSLoader.prototype = {
 
 				} );
 
-			}
+			};
 
 			for ( var i = 0, il = url.length; i < il; ++ i ) {
 
@@ -104,6 +109,11 @@ THREE.DDSLoader.prototype = {
 					texture.mipmaps = dds.mipmaps;
 
 				}
+
+               	//The default for Texture is Mip filter, which will fail if there are no mips
+            	// And for DDS we do not auto-generate them.
+           	    if (dds.mipmapCount == 1)
+                	texture.minFilter = THREE.LinearFilter;
 
 				texture.format = dds.format;
 				texture.needsUpdate = true;
