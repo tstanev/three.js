@@ -38,9 +38,13 @@
 
 			var children = object.children;
 
-			for ( var i = 0, l = children.length; i < l; i ++ ) {
+			if (children) {
 
-				intersectObject( children[ i ], raycaster, intersects, true );
+				for ( var i = 0, l = children.length; i < l; i ++ ) {
+
+					intersectObject( children[ i ], raycaster, intersects, true );
+
+				}
 
 			}
 

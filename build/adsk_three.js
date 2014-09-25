@@ -7094,9 +7094,13 @@ THREE.EventDispatcher.prototype = {
 
 			var children = object.children;
 
-			for ( var i = 0, l = children.length; i < l; i ++ ) {
+			if (children) {
 
-				intersectObject( children[ i ], raycaster, intersects, true );
+				for ( var i = 0, l = children.length; i < l; i ++ ) {
+
+					intersectObject( children[ i ], raycaster, intersects, true );
+
+				}
 
 			}
 
@@ -14815,19 +14819,19 @@ THREE.Mesh.prototype.raycast = ( function () {
 						c = index + indices[ i + 2 ];
 
 						vA.set(
-							positions[ a * stride * 3 ],
-							positions[ a * stride * 3 + 1 ],
-							positions[ a * stride * 3 + 2 ]
+							positions[ a * stride ],
+							positions[ a * stride + 1 ],
+							positions[ a * stride + 2 ]
 						);
 						vB.set(
-							positions[ b * stride * 3 ],
-							positions[ b * stride * 3 + 1 ],
-							positions[ b * stride * 3 + 2 ]
+							positions[ b * stride ],
+							positions[ b * stride + 1 ],
+							positions[ b * stride + 2 ]
 						);
 						vC.set(
-							positions[ c * stride * 3 ],
-							positions[ c * stride * 3 + 1 ],
-							positions[ c * stride * 3 + 2 ]
+							positions[ c * stride ],
+							positions[ c * stride + 1 ],
+							positions[ c * stride + 2 ]
 						);
 
 
