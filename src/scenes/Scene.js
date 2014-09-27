@@ -40,7 +40,7 @@ THREE.Scene.prototype.__addObject = function ( object ) {
 
 		}
 
-	} else if ( ! ( object instanceof THREE.Camera || object instanceof THREE.Bone ) ) {
+	} else if ( ! ( object instanceof THREE.Camera ) ) {
 
 		this.__objectsAdded.push( object );
 
