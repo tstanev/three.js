@@ -241,6 +241,13 @@ THREE.DDSLoader.prototype = {
 
 		// Parse header
 
+		if ( !buffer || buffer.byteLength < headerLengthInt ) {
+
+			console.error( 'THREE.DDSLoader.parse: Invalid DDS header.' );
+			return dds;
+
+		}
+
 		var header = new Int32Array( buffer, 0, headerLengthInt );
 
 		if ( header[ off_magic ] !== DDS_MAGIC ) {
