@@ -2809,6 +2809,39 @@ function WebGLRenderer( parameters ) {
 
 	}
 
+
+	//Map texture format to sized internal format
+	function paramToInternal( format, type ) {
+
+		if ( format === THREE.RGBFormat ) {
+
+			switch ( type ) {
+
+				case THREE.UnsignedByteType : return _gl.RGB8;
+				case THREE.FloatType: return _gl.RGB32F;
+				case THREE.HalfFloatType: return _gl.RGB16F;
+				default: break;
+
+			}
+
+		} else if ( format === THREE.RGBAFormat ) {
+
+			switch ( type ) {
+
+				case THREE.UnsignedByteType : return _gl.RGBA8;
+				case THREE.FloatType: return _gl.RGBA32F;
+				case THREE.HalfFloatType: return _gl.RGBA16F;
+				default: break;
+
+			}
+
+		}
+
+		console.error( "failed to map texture format and type to internalformat" );
+		return paramThreeToGL( format );
+	}
+
+
 }
 
 
