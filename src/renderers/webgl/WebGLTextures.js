@@ -633,6 +633,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 
 		if ( renderTarget.depthBuffer && ! renderTarget.stencilBuffer ) {
 
+			//TODO WEBGL2: 32F type for float render targets?
 			_gl.renderbufferStorage( _gl.RENDERBUFFER, _gl.DEPTH_COMPONENT16, renderTarget.width, renderTarget.height );
 			_gl.framebufferRenderbuffer( _gl.FRAMEBUFFER, _gl.DEPTH_ATTACHMENT, _gl.RENDERBUFFER, renderbuffer );
 
@@ -749,7 +750,6 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 		infoMemory.textures ++;
 
 		var isCube = ( renderTarget.isWebGLRenderTargetCube === true );
-		var isTargetPowerOfTwo = isPowerOfTwo( renderTarget );
 
 		// Setup framebuffer
 
@@ -774,7 +774,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 		if ( isCube ) {
 
 			state.bindTexture( _gl.TEXTURE_CUBE_MAP, textureProperties.__webglTexture );
-			setTextureParameters( _gl.TEXTURE_CUBE_MAP, renderTarget.texture, isTargetPowerOfTwo );
+			setTextureParameters( _gl.TEXTURE_CUBE_MAP, renderTarget.texture );
 
 			for ( var i = 0; i < 6; i ++ ) {
 
@@ -782,16 +782,16 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 
 			}
 
-			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) _gl.generateMipmap( _gl.TEXTURE_CUBE_MAP );
+			if ( textureNeedsGenerateMipmaps( renderTarget.texture ) ) _gl.generateMipmap( _gl.TEXTURE_CUBE_MAP );
 			state.bindTexture( _gl.TEXTURE_CUBE_MAP, null );
 
 		} else {
 
 			state.bindTexture( _gl.TEXTURE_2D, textureProperties.__webglTexture );
-			setTextureParameters( _gl.TEXTURE_2D, renderTarget.texture, isTargetPowerOfTwo );
+			setTextureParameters( _gl.TEXTURE_2D, renderTarget.texture );
 			setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_2D );
 
-			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
+			if ( textureNeedsGenerateMipmaps( renderTarget.texture ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
 			state.bindTexture( _gl.TEXTURE_2D, null );
 
 		}
@@ -803,6 +803,16 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 			setupDepthRenderbuffer( renderTarget );
 
 		}
+
+/*
+		//Sanity check
+		_gl.bindFramebuffer( _gl.FRAMEBUFFER, renderTargetProperties.__webglFramebuffer );
+		var status = _gl.checkFramebufferStatus( _gl.FRAMEBUFFER );
+		if ( status !== _gl.FRAMEBUFFER_COMPLETE ) {
+			console.log("Fail to bind render targets: " + status);
+		}
+		_gl.bindFramebuffer( _gl.FRAMEBUFFER, null );
+*/
 
 	}
 

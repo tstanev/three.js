@@ -275,7 +275,8 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 		'#version 300 es',
 		'#define THREE_JS_WEBGL2',
 		'#define varying out',
-		'#define attribute in'
+		'#define attribute in',
+		'#define texture2D texture'
 	].join( '\n' );
 
 	var ES3_FRAG_PREFIX = [

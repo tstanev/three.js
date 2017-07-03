@@ -264,6 +264,7 @@ function WebGLRenderer( parameters ) {
 
 	extensions.get( 'OES_texture_float_linear' );
 	extensions.get( 'OES_texture_half_float_linear' );
+	extensions.get( 'EXT_color_buffer_float' );
 
 	BufferGeometry.MaxIndex = 4294967296;
 
@@ -2611,6 +2612,7 @@ function WebGLRenderer( parameters ) {
 			_currentFramebuffer = framebuffer;
 
 		}
+
 
 		state.scissor( _currentScissor );
 		state.setScissorTest( _currentScissorTest );
