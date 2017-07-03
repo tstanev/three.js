@@ -377,7 +377,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 
 				}
 
-				if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) {
+				if ( textureNeedsGenerateMipmaps( texture ) ) {
 
 					_gl.generateMipmap( _gl.TEXTURE_CUBE_MAP );
 
