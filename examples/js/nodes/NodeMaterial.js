@@ -115,23 +115,12 @@ THREE.NodeMaterial.prototype.build = function() {
 	this.fragmentNode = '';
 
 	this.prefixCode = [
-	"#ifdef GL_EXT_shader_texture_lod",
 
-	"	#define texCube(a, b) textureCube(a, b)",
-	"	#define texCubeBias(a, b, c) textureCubeLodEXT(a, b, c)",
+	"	#define texCube(a, b) texture(a, b)",
+	"	#define texCubeBias(a, b, c) textureLod(a, b, c)",
 
-	"	#define tex2D(a, b) texture2D(a, b)",
-	"	#define tex2DBias(a, b, c) texture2DLodEXT(a, b, c)",
-
-	"#else",
-
-	"	#define texCube(a, b) textureCube(a, b)",
-	"	#define texCubeBias(a, b, c) textureCube(a, b, c)",
-
-	"	#define tex2D(a, b) texture2D(a, b)",
-	"	#define tex2DBias(a, b, c) texture2D(a, b, c)",
-
-	"#endif",
+	"	#define tex2D(a, b) texture(a, b)",
+	"	#define tex2DBias(a, b, c) textureLod(a, b, c)",
 
 	"#include <packing>"
 

@@ -25,26 +25,17 @@ function WebGLBufferRenderer( gl, extensions, infoRender ) {
 
 	function renderInstances( geometry, start, count ) {
 
-		var extension = extensions.get( 'ANGLE_instanced_arrays' );
-
-		if ( extension === null ) {
-
-			console.error( 'THREE.WebGLBufferRenderer: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-			return;
-
-		}
-
 		var position = geometry.attributes.position;
 
 		if ( position.isInterleavedBufferAttribute ) {
 
 			count = position.data.count;
 
-			extension.drawArraysInstancedANGLE( mode, 0, count, geometry.maxInstancedCount );
+			gl.drawArraysInstanced( mode, 0, count, geometry.maxInstancedCount );
 
 		} else {
 
-			extension.drawArraysInstancedANGLE( mode, start, count, geometry.maxInstancedCount );
+			gl.drawArraysInstanced( mode, start, count, geometry.maxInstancedCount );
 
 		}
 

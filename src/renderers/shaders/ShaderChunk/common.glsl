@@ -73,6 +73,8 @@ vec3 linePlaneIntersect( in vec3 pointOnLine, in vec3 lineDirection, in vec3 poi
 
 }
 
+#ifndef THREE_JS_WEBGL2
+
 mat3 transpose( const in mat3 v ) {
 
 	mat3 tmp;
@@ -83,3 +85,5 @@ mat3 transpose( const in mat3 v ) {
 	return tmp;
 
 }
+
+#endif

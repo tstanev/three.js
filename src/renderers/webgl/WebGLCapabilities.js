@@ -66,7 +66,7 @@ function WebGLCapabilities( gl, extensions, parameters ) {
 
 	}
 
-	var logarithmicDepthBuffer = parameters.logarithmicDepthBuffer === true && !! extensions.get( 'EXT_frag_depth' );
+	var logarithmicDepthBuffer = parameters.logarithmicDepthBuffer;
 
 	var maxTextures = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
 	var maxVertexTextures = gl.getParameter( gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS );
@@ -79,7 +79,7 @@ function WebGLCapabilities( gl, extensions, parameters ) {
 	var maxFragmentUniforms = gl.getParameter( gl.MAX_FRAGMENT_UNIFORM_VECTORS );
 
 	var vertexTextures = maxVertexTextures > 0;
-	var floatFragmentTextures = !! extensions.get( 'OES_texture_float' );
+	var floatFragmentTextures = true;
 	var floatVertexTextures = vertexTextures && floatFragmentTextures;
 
 	return {
