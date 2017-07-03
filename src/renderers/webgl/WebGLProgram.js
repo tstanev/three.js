@@ -312,6 +312,7 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 		prefixVertex = [
 
 			'#version 300 es',
+			'#define THREE_JS_WEBGL2',
 			'#define varying out',
 			'#define attribute in',
 
@@ -419,6 +420,7 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 		prefixFragment = [
 
 			'#version 300 es',
+			'#define THREE_JS_WEBGL2',
 			'#define varying in',
 			'#define texture2D texture',
 			'#define gl_FragColor outColor',
