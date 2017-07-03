@@ -79,21 +79,6 @@ function getToneMappingFunction( functionName, toneMapping ) {
 
 }
 
-function generateExtensions( extensions, parameters, rendererExtensions ) {
-
-	extensions = extensions || {};
-
-	var chunks = [
-		( extensions.derivatives || parameters.envMapCubeUV || parameters.bumpMap || parameters.normalMap || parameters.flatShading ) ? '#extension GL_OES_standard_derivatives : enable' : '',
-		( extensions.fragDepth || parameters.logarithmicDepthBuffer ) && rendererExtensions.get( 'EXT_frag_depth' ) ? '#extension GL_EXT_frag_depth : enable' : '',
-		( extensions.drawBuffers ) && rendererExtensions.get( 'WEBGL_draw_buffers' ) ? '#extension GL_EXT_draw_buffers : require' : '',
-		( extensions.shaderTextureLOD || parameters.envMap ) && rendererExtensions.get( 'EXT_shader_texture_lod' ) ? '#extension GL_EXT_shader_texture_lod : enable' : ''
-	];
-
-	return chunks.filter( filterEmptyLine ).join( '\n' );
-
-}
-
 function generateDefines( defines ) {
 
 	var chunks = [];
@@ -278,13 +263,13 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 	//
 
-	var customExtensions = generateExtensions( extensions, parameters, renderer.extensions );
-
 	var customDefines = generateDefines( defines );
 
 	//
 
 	var program = gl.createProgram();
+
+	//Hopefully those macro mappings are temporary
 
 	var ES3_VERT_PREFIX = [
 		'#version 300 es',
@@ -298,6 +283,8 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 		'#define THREE_JS_WEBGL2',
 		'#define varying in',
 		'#define texture2D texture',
+		'#define textureCube texture',
+		'#define texture2DProj textureProj',
 		'#define gl_FragColor outColor',
 		'out highp vec4 outColor;'
 	].join( '\n' );
@@ -334,6 +321,8 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 			'precision ' + parameters.precision + ' float;',
 			'precision ' + parameters.precision + ' int;',
+
+			customDefines,
 
 			'#define SHADER_NAME ' + shader.name,
 
@@ -378,7 +367,7 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 			parameters.sizeAttenuation ? '#define USE_SIZEATTENUATION' : '',
 
 			parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
-			parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
+			parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
 			'uniform mat4 modelMatrix;',
 			'uniform mat4 modelViewMatrix;',
@@ -485,9 +474,9 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 			parameters.physicallyCorrectLights ? "#define PHYSICALLY_CORRECT_LIGHTS" : '',
 
 			parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
-			parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
+			parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
-			parameters.envMap && renderer.extensions.get( 'EXT_shader_texture_lod' ) ? '#define TEXTURE_LOD_EXT' : '',
+			parameters.envMap ? '#define TEXTURE_LOD_EXT' : '',
 
 			'uniform mat4 viewMatrix;',
 			'uniform vec3 cameraPosition;',
