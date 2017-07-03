@@ -5636,7 +5636,7 @@
 
 	var color_vertex = "#ifdef USE_COLOR\n\tvColor.xyz = color.xyz;\n#endif";
 
-	var common = "#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract(sin(sn) * c);\n}\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\nstruct GeometricContext {\n\tvec3 position;\n\tvec3 normal;\n\tvec3 viewDir;\n};\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\nvec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );\n}\nvec3 projectOnPlane(in vec3 point, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\tfloat distance = dot( planeNormal, point - pointOnPlane );\n\treturn - distance * planeNormal + point;\n}\nfloat sideOfPlane( in vec3 point, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\treturn sign( dot( point - pointOnPlane, planeNormal ) );\n}\nvec3 linePlaneIntersect( in vec3 pointOnLine, in vec3 lineDirection, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\treturn lineDirection * ( dot( planeNormal, pointOnPlane - pointOnLine ) / dot( planeNormal, lineDirection ) ) + pointOnLine;\n}\nmat3 transpose( const in mat3 v ) {\n\tmat3 tmp;\n\ttmp[0] = vec3(v[0].x, v[1].x, v[2].x);\n\ttmp[1] = vec3(v[0].y, v[1].y, v[2].y);\n\ttmp[2] = vec3(v[0].z, v[1].z, v[2].z);\n\treturn tmp;\n}\n";
+	var common = "#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract(sin(sn) * c);\n}\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\nstruct GeometricContext {\n\tvec3 position;\n\tvec3 normal;\n\tvec3 viewDir;\n};\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\nvec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );\n}\nvec3 projectOnPlane(in vec3 point, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\tfloat distance = dot( planeNormal, point - pointOnPlane );\n\treturn - distance * planeNormal + point;\n}\nfloat sideOfPlane( in vec3 point, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\treturn sign( dot( point - pointOnPlane, planeNormal ) );\n}\nvec3 linePlaneIntersect( in vec3 pointOnLine, in vec3 lineDirection, in vec3 pointOnPlane, in vec3 planeNormal ) {\n\treturn lineDirection * ( dot( planeNormal, pointOnPlane - pointOnLine ) / dot( planeNormal, lineDirection ) ) + pointOnLine;\n}\n#ifndef THREE_JS_WEBGL2\nmat3 transpose( const in mat3 v ) {\n\tmat3 tmp;\n\ttmp[0] = vec3(v[0].x, v[1].x, v[2].x);\n\ttmp[1] = vec3(v[0].y, v[1].y, v[2].y);\n\ttmp[2] = vec3(v[0].z, v[1].z, v[2].z);\n\treturn tmp;\n}\n#endif\n";
 
 	var cube_uv_reflection_fragment = "#ifdef ENVMAP_TYPE_CUBE_UV\n#define cubeUV_textureSize (1024.0)\nint getFaceFromDirection(vec3 direction) {\n\tvec3 absDirection = abs(direction);\n\tint face = -1;\n\tif( absDirection.x > absDirection.z ) {\n\t\tif(absDirection.x > absDirection.y )\n\t\t\tface = direction.x > 0.0 ? 0 : 3;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\telse {\n\t\tif(absDirection.z > absDirection.y )\n\t\t\tface = direction.z > 0.0 ? 2 : 5;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\treturn face;\n}\n#define cubeUV_maxLods1  (log2(cubeUV_textureSize*0.25) - 1.0)\n#define cubeUV_rangeClamp (exp2((6.0 - 1.0) * 2.0))\nvec2 MipLevelInfo( vec3 vec, float roughnessLevel, float roughness ) {\n\tfloat scale = exp2(cubeUV_maxLods1 - roughnessLevel);\n\tfloat dxRoughness = dFdx(roughness);\n\tfloat dyRoughness = dFdy(roughness);\n\tvec3 dx = dFdx( vec * scale * dxRoughness );\n\tvec3 dy = dFdy( vec * scale * dyRoughness );\n\tfloat d = max( dot( dx, dx ), dot( dy, dy ) );\n\td = clamp(d, 1.0, cubeUV_rangeClamp);\n\tfloat mipLevel = 0.5 * log2(d);\n\treturn vec2(floor(mipLevel), fract(mipLevel));\n}\n#define cubeUV_maxLods2 (log2(cubeUV_textureSize*0.25) - 2.0)\n#define cubeUV_rcpTextureSize (1.0 / cubeUV_textureSize)\nvec2 getCubeUV(vec3 direction, float roughnessLevel, float mipLevel) {\n\tmipLevel = roughnessLevel > cubeUV_maxLods2 - 3.0 ? 0.0 : mipLevel;\n\tfloat a = 16.0 * cubeUV_rcpTextureSize;\n\tvec2 exp2_packed = exp2( vec2( roughnessLevel, mipLevel ) );\n\tvec2 rcp_exp2_packed = vec2( 1.0 ) / exp2_packed;\n\tfloat powScale = exp2_packed.x * exp2_packed.y;\n\tfloat scale = rcp_exp2_packed.x * rcp_exp2_packed.y * 0.25;\n\tfloat mipOffset = 0.75*(1.0 - rcp_exp2_packed.y) * rcp_exp2_packed.x;\n\tbool bRes = mipLevel == 0.0;\n\tscale =  bRes && (scale < a) ? a : scale;\n\tvec3 r;\n\tvec2 offset;\n\tint face = getFaceFromDirection(direction);\n\tfloat rcpPowScale = 1.0 / powScale;\n\tif( face == 0) {\n\t\tr = vec3(direction.x, -direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 1) {\n\t\tr = vec3(direction.y, direction.x, direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 2) {\n\t\tr = vec3(direction.z, direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 3) {\n\t\tr = vec3(direction.x, direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse if( face == 4) {\n\t\tr = vec3(direction.y, direction.x, -direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse {\n\t\tr = vec3(direction.z, -direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\tr = normalize(r);\n\tfloat texelOffset = 0.5 * cubeUV_rcpTextureSize;\n\tvec2 s = ( r.yz / abs( r.x ) + vec2( 1.0 ) ) * 0.5;\n\tvec2 base = offset + vec2( texelOffset );\n\treturn base + s * ( scale - 2.0 * texelOffset );\n}\n#define cubeUV_maxLods3 (log2(cubeUV_textureSize*0.25) - 3.0)\nvec4 textureCubeUV(vec3 reflectedDirection, float roughness ) {\n\tfloat roughnessVal = roughness* cubeUV_maxLods3;\n\tfloat r1 = floor(roughnessVal);\n\tfloat r2 = r1 + 1.0;\n\tfloat t = fract(roughnessVal);\n\tvec2 mipInfo = MipLevelInfo(reflectedDirection, r1, roughness);\n\tfloat s = mipInfo.y;\n\tfloat level0 = mipInfo.x;\n\tfloat level1 = level0 + 1.0;\n\tlevel1 = level1 > 5.0 ? 5.0 : level1;\n\tlevel0 += min( floor( s + 0.5 ), 5.0 );\n\tvec2 uv_10 = getCubeUV(reflectedDirection, r1, level0);\n\tvec4 color10 = envMapTexelToLinear(texture2D(envMap, uv_10));\n\tvec2 uv_20 = getCubeUV(reflectedDirection, r2, level0);\n\tvec4 color20 = envMapTexelToLinear(texture2D(envMap, uv_20));\n\tvec4 result = mix(color10, color20, t);\n\treturn vec4(result.rgb, 1.0);\n}\n#endif\n";
 
@@ -16536,16 +16536,7 @@
 
 		function renderInstances( geometry, start, count ) {
 
-			var extension = extensions.get( 'ANGLE_instanced_arrays' );
-
-			if ( extension === null ) {
-
-				console.error( 'THREE.WebGLIndexedBufferRenderer: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-				return;
-
-			}
-
-			extension.drawElementsInstancedANGLE( mode, count, type, start * bytesPerElement, geometry.maxInstancedCount );
+			gl.drawElementsInstanced( mode, count, type, start * bytesPerElement, geometry.maxInstancedCount );
 
 			infoRender.calls ++;
 			infoRender.vertices += count * geometry.maxInstancedCount;
@@ -16590,26 +16581,17 @@
 
 		function renderInstances( geometry, start, count ) {
 
-			var extension = extensions.get( 'ANGLE_instanced_arrays' );
-
-			if ( extension === null ) {
-
-				console.error( 'THREE.WebGLBufferRenderer: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-				return;
-
-			}
-
 			var position = geometry.attributes.position;
 
 			if ( position.isInterleavedBufferAttribute ) {
 
 				count = position.data.count;
 
-				extension.drawArraysInstancedANGLE( mode, 0, count, geometry.maxInstancedCount );
+				gl.drawArraysInstanced( mode, 0, count, geometry.maxInstancedCount );
 
 			} else {
 
-				extension.drawArraysInstancedANGLE( mode, start, count, geometry.maxInstancedCount );
+				gl.drawArraysInstanced( mode, start, count, geometry.maxInstancedCount );
 
 			}
 
@@ -17082,21 +17064,6 @@
 
 	}
 
-	function generateExtensions( extensions, parameters, rendererExtensions ) {
-
-		extensions = extensions || {};
-
-		var chunks = [
-			( extensions.derivatives || parameters.envMapCubeUV || parameters.bumpMap || parameters.normalMap || parameters.flatShading ) ? '#extension GL_OES_standard_derivatives : enable' : '',
-			( extensions.fragDepth || parameters.logarithmicDepthBuffer ) && rendererExtensions.get( 'EXT_frag_depth' ) ? '#extension GL_EXT_frag_depth : enable' : '',
-			( extensions.drawBuffers ) && rendererExtensions.get( 'WEBGL_draw_buffers' ) ? '#extension GL_EXT_draw_buffers : require' : '',
-			( extensions.shaderTextureLOD || parameters.envMap ) && rendererExtensions.get( 'EXT_shader_texture_lod' ) ? '#extension GL_EXT_shader_texture_lod : enable' : ''
-		];
-
-		return chunks.filter( filterEmptyLine ).join( '\n' );
-
-	}
-
 	function generateDefines( defines ) {
 
 		var chunks = [];
@@ -17281,19 +17248,39 @@
 
 		//
 
-		var customExtensions = generateExtensions( extensions, parameters, renderer.extensions );
-
 		var customDefines = generateDefines( defines );
 
 		//
 
 		var program = gl.createProgram();
 
+		//Hopefully those macro mappings are temporary
+
+		var ES3_VERT_PREFIX = [
+			'#version 300 es',
+			'#define THREE_JS_WEBGL2',
+			'#define varying out',
+			'#define attribute in'
+		].join( '\n' );
+
+		var ES3_FRAG_PREFIX = [
+			'#version 300 es',
+			'#define THREE_JS_WEBGL2',
+			'#define varying in',
+			'#define texture2D texture',
+			'#define textureCube texture',
+			'#define texture2DProj textureProj',
+			'#define gl_FragColor outColor',
+			'out highp vec4 outColor;'
+		].join( '\n' );
+
 		var prefixVertex, prefixFragment;
 
 		if ( material.isRawShaderMaterial ) {
 
 			prefixVertex = [
+
+				ES3_VERT_PREFIX,
 
 				customDefines,
 
@@ -17303,7 +17290,8 @@
 
 			prefixFragment = [
 
-				customExtensions,
+				ES3_FRAG_PREFIX,
+
 				customDefines,
 
 				'\n'
@@ -17314,12 +17302,14 @@
 
 			prefixVertex = [
 
+				ES3_VERT_PREFIX,
+
 				'precision ' + parameters.precision + ' float;',
 				'precision ' + parameters.precision + ' int;',
 
-				'#define SHADER_NAME ' + shader.name,
-
 				customDefines,
+
+				'#define SHADER_NAME ' + shader.name,
 
 				parameters.supportsVertexTextures ? '#define VERTEX_TEXTURES' : '',
 
@@ -17362,7 +17352,7 @@
 				parameters.sizeAttenuation ? '#define USE_SIZEATTENUATION' : '',
 
 				parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
-				parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
+				parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
 				'uniform mat4 modelMatrix;',
 				'uniform mat4 modelViewMatrix;',
@@ -17419,7 +17409,7 @@
 
 			prefixFragment = [
 
-				customExtensions,
+				ES3_FRAG_PREFIX,
 
 				'precision ' + parameters.precision + ' float;',
 				'precision ' + parameters.precision + ' int;',
@@ -17469,9 +17459,9 @@
 				parameters.physicallyCorrectLights ? "#define PHYSICALLY_CORRECT_LIGHTS" : '',
 
 				parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
-				parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
+				parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
-				parameters.envMap && renderer.extensions.get( 'EXT_shader_texture_lod' ) ? '#define TEXTURE_LOD_EXT' : '',
+				parameters.envMap ? '#define TEXTURE_LOD_EXT' : '',
 
 				'uniform mat4 viewMatrix;',
 				'uniform vec3 cameraPosition;',
@@ -18037,31 +18027,79 @@
 
 		function textureNeedsPowerOfTwo( texture ) {
 
-			return ( texture.wrapS !== ClampToEdgeWrapping || texture.wrapT !== ClampToEdgeWrapping ) ||
-				( texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter );
+			return false;
 
 		}
 
-		function textureNeedsGenerateMipmaps( texture, isPowerOfTwo ) {
+		function textureNeedsGenerateMipmaps( texture ) {
 
-			return texture.generateMipmaps && isPowerOfTwo &&
-				texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter;
+			return texture.generateMipmaps && texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter;
 
 		}
 
 		// Fallback filters for non-power-of-2 textures
 
-		function filterFallback( f ) {
+		function paramToInternal( format, type, isDepth ) {
 
-			if ( f === NearestFilter || f === NearestMipMapNearestFilter || f === NearestMipMapLinearFilter ) {
+			if ( isDepth ) {
 
-				return _gl.NEAREST;
+				// populate depth texture with dummy data
+
+				var internalFormat = _gl.DEPTH_COMPONENT;
+
+				if ( texture.type === FloatType ) {
+
+					internalFormat = _gl.DEPTH_COMPONENT32F;
+
+				} else {
+
+					// WebGL 2.0 requires signed internalformat for glTexImage2D
+					internalFormat = _gl.DEPTH_COMPONENT16;
+
+				}
+
+				// Depth stencil textures need the DEPTH_STENCIL internal format
+				// (https://www.khronos.org/registry/webgl/extensions/WEBGL_depth_texture/)
+				if ( texture.format === DepthStencilFormat ) {
+
+					internalFormat = _gl.DEPTH_STENCIL;
+
+				}
+
+				return internalFormat;
 
 			}
 
-			return _gl.LINEAR;
+
+			if ( format === THREE.RGBFormat ) {
+
+				switch ( type ) {
+
+					case THREE.UnsignedByteType : return _gl.RGB8;
+					case THREE.FloatType: return _gl.RGB32F;
+					case THREE.HalfFloatType: return _gl.RGB16F;
+					default: break;
+
+				}
+
+			} else if ( format === THREE.RGBAFormat ) {
+
+				switch ( type ) {
+
+					case THREE.UnsignedByteType : return _gl.RGBA8;
+					case THREE.FloatType: return _gl.RGBA32F;
+					case THREE.HalfFloatType: return _gl.RGBA16F;
+					default: break;
+
+				}
+
+			}
+
+			console.error( "failed to map texture format and type to internalformat" );
+			return paramThreeToGL( format );
 
 		}
+
 
 		//
 
@@ -18234,11 +18272,11 @@
 					}
 
 					var image = cubeImage[ 0 ],
-					isPowerOfTwoImage = isPowerOfTwo( image ),
 					glFormat = paramThreeToGL( texture.format ),
-					glType = paramThreeToGL( texture.type );
+					glType = paramThreeToGL( texture.type ),
+					glInternalFormat = paramToInternal( texture.format, texture.type );
 
-					setTextureParameters( _gl.TEXTURE_CUBE_MAP, texture, isPowerOfTwoImage );
+					setTextureParameters( _gl.TEXTURE_CUBE_MAP, texture );
 
 					for ( var i = 0; i < 6; i ++ ) {
 
@@ -18246,11 +18284,11 @@
 
 							if ( isDataTexture ) {
 
-								state.texImage2D( _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glFormat, cubeImage[ i ].width, cubeImage[ i ].height, 0, glFormat, glType, cubeImage[ i ].data );
+								state.texImage2D( _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, cubeImage[ i ].width, cubeImage[ i ].height, 0, glFormat, glType, cubeImage[ i ].data );
 
 							} else {
 
-								state.texImage2D( _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glFormat, glFormat, glType, cubeImage[ i ] );
+								state.texImage2D( _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, glFormat, glType, cubeImage[ i ] );
 
 							}
 
@@ -18314,41 +18352,18 @@
 
 		}
 
-		function setTextureParameters( textureType, texture, isPowerOfTwoImage ) {
+		function setTextureParameters( textureType, texture ) {
 
 			var extension;
 
-			if ( isPowerOfTwoImage ) {
+			_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_S, paramThreeToGL( texture.wrapS ) );
+			_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_T, paramThreeToGL( texture.wrapT ) );
 
-				_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_S, paramThreeToGL( texture.wrapS ) );
-				_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_T, paramThreeToGL( texture.wrapT ) );
-
-				_gl.texParameteri( textureType, _gl.TEXTURE_MAG_FILTER, paramThreeToGL( texture.magFilter ) );
-				_gl.texParameteri( textureType, _gl.TEXTURE_MIN_FILTER, paramThreeToGL( texture.minFilter ) );
-
-			} else {
-
-				_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_S, _gl.CLAMP_TO_EDGE );
-				_gl.texParameteri( textureType, _gl.TEXTURE_WRAP_T, _gl.CLAMP_TO_EDGE );
-
-				if ( texture.wrapS !== ClampToEdgeWrapping || texture.wrapT !== ClampToEdgeWrapping ) {
-
-					console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.wrapS and Texture.wrapT should be set to THREE.ClampToEdgeWrapping.', texture );
-
-				}
-
-				_gl.texParameteri( textureType, _gl.TEXTURE_MAG_FILTER, filterFallback( texture.magFilter ) );
-				_gl.texParameteri( textureType, _gl.TEXTURE_MIN_FILTER, filterFallback( texture.minFilter ) );
-
-				if ( texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter ) {
-
-					console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.', texture );
-
-				}
-
-			}
+			_gl.texParameteri( textureType, _gl.TEXTURE_MAG_FILTER, paramThreeToGL( texture.magFilter ) );
+			_gl.texParameteri( textureType, _gl.TEXTURE_MIN_FILTER, paramThreeToGL( texture.minFilter ) );
 
 			extension = extensions.get( 'EXT_texture_filter_anisotropic' );
+
 
 			if ( extension ) {
 
@@ -18395,11 +18410,11 @@
 
 			}
 
-			var isPowerOfTwoImage = isPowerOfTwo( image ),
-			glFormat = paramThreeToGL( texture.format ),
-			glType = paramThreeToGL( texture.type );
+			var glFormat = paramThreeToGL( texture.format ),
+			glType = paramThreeToGL( texture.type ),
+			glInternalFormat = paramToInternal( texture.format, texture.type );
 
-			setTextureParameters( _gl.TEXTURE_2D, texture, isPowerOfTwoImage );
+			setTextureParameters( _gl.TEXTURE_2D, texture );
 
 			var mipmap, mipmaps = texture.mipmaps;
 
@@ -18465,12 +18480,12 @@
 				// if there are no manual mipmaps
 				// set 0 level mipmap and then use GL to generate other mipmap levels
 
-				if ( mipmaps.length > 0 && isPowerOfTwoImage ) {
+				if ( mipmaps.length > 0 ) {
 
 					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
 
 						mipmap = mipmaps[ i ];
-						state.texImage2D( _gl.TEXTURE_2D, i, glFormat, mipmap.width, mipmap.height, 0, glFormat, glType, mipmap.data );
+						state.texImage2D( _gl.TEXTURE_2D, i, glInternalFormat, mipmap.width, mipmap.height, 0, glFormat, glType, mipmap.data );
 
 					}
 
@@ -18478,7 +18493,7 @@
 
 				} else {
 
-					state.texImage2D( _gl.TEXTURE_2D, 0, glFormat, image.width, image.height, 0, glFormat, glType, image.data );
+					state.texImage2D( _gl.TEXTURE_2D, 0, glInternalFormat, image.width, image.height, 0, glFormat, glType, image.data );
 
 				}
 
@@ -18492,7 +18507,7 @@
 
 						if ( state.getCompressedTextureFormats().indexOf( glFormat ) > - 1 ) {
 
-							state.compressedTexImage2D( _gl.TEXTURE_2D, i, glFormat, mipmap.width, mipmap.height, 0, mipmap.data );
+							state.compressedTexImage2D( _gl.TEXTURE_2D, i, glInternalFormat, mipmap.width, mipmap.height, 0, mipmap.data );
 
 						} else {
 
@@ -18502,7 +18517,7 @@
 
 					} else {
 
-						state.texImage2D( _gl.TEXTURE_2D, i, glFormat, mipmap.width, mipmap.height, 0, glFormat, glType, mipmap.data );
+						state.texImage2D( _gl.TEXTURE_2D, i, glInternalFormat, mipmap.width, mipmap.height, 0, glFormat, glType, mipmap.data );
 
 					}
 
@@ -18516,12 +18531,12 @@
 				// if there are no manual mipmaps
 				// set 0 level mipmap and then use GL to generate other mipmap levels
 
-				if ( mipmaps.length > 0 && isPowerOfTwoImage ) {
+				if ( mipmaps.length > 0 ) {
 
 					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
 
 						mipmap = mipmaps[ i ];
-						state.texImage2D( _gl.TEXTURE_2D, i, glFormat, glFormat, glType, mipmap );
+						state.texImage2D( _gl.TEXTURE_2D, i, glInternalFormat, glFormat, glType, mipmap );
 
 					}
 
@@ -18529,13 +18544,13 @@
 
 				} else {
 
-					state.texImage2D( _gl.TEXTURE_2D, 0, glFormat, glFormat, glType, image );
+					state.texImage2D( _gl.TEXTURE_2D, 0, glInternalFormat, glFormat, glType, image );
 
 				}
 
 			}
 
-			if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
+			if ( textureNeedsGenerateMipmaps( texture ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
 
 			textureProperties.__version = texture.version;
 
@@ -18550,7 +18565,8 @@
 
 			var glFormat = paramThreeToGL( renderTarget.texture.format );
 			var glType = paramThreeToGL( renderTarget.texture.type );
-			state.texImage2D( textureTarget, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null );
+			var glInternalFormat = paramToInternal( renderTarget.texture.format, renderTarget.texture.type );
+			state.texImage2D( textureTarget, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null );
 			_gl.bindFramebuffer( _gl.FRAMEBUFFER, framebuffer );
 			_gl.framebufferTexture2D( _gl.FRAMEBUFFER, attachment, textureTarget, properties.get( renderTarget.texture ).__webglTexture, 0 );
 			_gl.bindFramebuffer( _gl.FRAMEBUFFER, null );
@@ -19223,9 +19239,7 @@
 
 			if ( attributeDivisors[ attribute ] !== 0 ) {
 
-				var extension = extensions.get( 'ANGLE_instanced_arrays' );
-
-				extension.vertexAttribDivisorANGLE( attribute, 0 );
+				gl.vertexAttribDivisor( attribute, 0 );
 				attributeDivisors[ attribute ] = 0;
 
 			}
@@ -19245,9 +19259,7 @@
 
 			if ( attributeDivisors[ attribute ] !== meshPerAttribute ) {
 
-				var extension = extensions.get( 'ANGLE_instanced_arrays' );
-
-				extension.vertexAttribDivisorANGLE( attribute, meshPerAttribute );
+				gl.vertexAttribDivisor( attribute, meshPerAttribute );
 				attributeDivisors[ attribute ] = meshPerAttribute;
 
 			}
@@ -19806,7 +19818,7 @@
 
 		}
 
-		var logarithmicDepthBuffer = parameters.logarithmicDepthBuffer === true && !! extensions.get( 'EXT_frag_depth' );
+		var logarithmicDepthBuffer = parameters.logarithmicDepthBuffer;
 
 		var maxTextures = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
 		var maxVertexTextures = gl.getParameter( gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS );
@@ -19819,7 +19831,7 @@
 		var maxFragmentUniforms = gl.getParameter( gl.MAX_FRAGMENT_UNIFORM_VECTORS );
 
 		var vertexTextures = maxVertexTextures > 0;
-		var floatFragmentTextures = !! extensions.get( 'OES_texture_float' );
+		var floatFragmentTextures = true;
 		var floatVertexTextures = vertexTextures && floatFragmentTextures;
 
 		return {
@@ -20487,11 +20499,11 @@
 				preserveDrawingBuffer: _preserveDrawingBuffer
 			};
 
-			_gl = _context || _canvas.getContext( 'webgl', contextAttributes ) || _canvas.getContext( 'experimental-webgl', contextAttributes );
+			_gl = _context || _canvas.getContext( 'webgl2', contextAttributes );
 
 			if ( _gl === null ) {
 
-				if ( _canvas.getContext( 'webgl' ) !== null ) {
+				if ( _canvas.getContext( 'webgl2' ) !== null ) {
 
 					throw 'Error creating WebGL context with your selected attributes.';
 
@@ -20525,19 +20537,10 @@
 
 		var extensions = new WebGLExtensions( _gl );
 
-		extensions.get( 'WEBGL_depth_texture' );
-		extensions.get( 'OES_texture_float' );
 		extensions.get( 'OES_texture_float_linear' );
-		extensions.get( 'OES_texture_half_float' );
 		extensions.get( 'OES_texture_half_float_linear' );
-		extensions.get( 'OES_standard_derivatives' );
-		extensions.get( 'ANGLE_instanced_arrays' );
 
-		if ( extensions.get( 'OES_element_index_uint' ) ) {
-
-			BufferGeometry.MaxIndex = 4294967296;
-
-		}
+		BufferGeometry.MaxIndex = 4294967296;
 
 		var capabilities = new WebGLCapabilities( _gl, extensions, parameters );
 
@@ -21172,17 +21175,6 @@
 		};
 
 		function setupVertexAttributes( material, program, geometry, startIndex ) {
-
-			if ( geometry && geometry.isInstancedBufferGeometry ) {
-
-				if ( extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
-
-					console.error( 'THREE.WebGLRenderer.setupVertexAttributes: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-					return;
-
-				}
-
-			}
 
 			if ( startIndex === undefined ) startIndex = 0;
 
@@ -22946,7 +22938,7 @@
 					}
 
 					if ( textureType !== UnsignedByteType && paramThreeToGL( textureType ) !== _gl.getParameter( _gl.IMPLEMENTATION_COLOR_READ_TYPE ) && // IE11, Edge and Chrome Mac < 52 (#9513)
-						! ( textureType === FloatType && ( extensions.get( 'OES_texture_float' ) || extensions.get( 'WEBGL_color_buffer_float' ) ) ) && // Chrome Mac >= 52 and Firefox
+						! ( textureType === FloatType ) && // Chrome Mac >= 52 and Firefox
 						! ( textureType === HalfFloatType && extensions.get( 'EXT_color_buffer_half_float' ) ) ) {
 
 						console.error( 'THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in UnsignedByteType or implementation defined type.' );
@@ -23013,14 +23005,8 @@
 			if ( p === IntType ) return _gl.INT;
 			if ( p === UnsignedIntType ) return _gl.UNSIGNED_INT;
 			if ( p === FloatType ) return _gl.FLOAT;
+			if ( p === HalfFloatType ) return _gl.HALF_FLOAT;
 
-			if ( p === HalfFloatType ) {
-
-				extension = extensions.get( 'OES_texture_half_float' );
-
-				if ( extension !== null ) return extension.HALF_FLOAT_OES;
-
-			}
 
 			if ( p === AlphaFormat ) return _gl.ALPHA;
 			if ( p === RGBFormat ) return _gl.RGB;
@@ -23087,30 +23073,21 @@
 
 			}
 
-			if ( p === MinEquation || p === MaxEquation ) {
 
-				extension = extensions.get( 'EXT_blend_minmax' );
+			if ( p === MinEquation ) return _gl.MIN;
+			if ( p === MaxEquation ) return _gl.MAX;
 
-				if ( extension !== null ) {
+			if ( p === UnsignedInt248Type ) return _gl.UNSIGNED_INT_24_8_WEBGL;
 
-					if ( p === MinEquation ) return extension.MIN_EXT;
-					if ( p === MaxEquation ) return extension.MAX_EXT;
-
-				}
-
-			}
-
-			if ( p === UnsignedInt248Type ) {
-
-				extension = extensions.get( 'WEBGL_depth_texture' );
-
-				if ( extension !== null ) return extension.UNSIGNED_INT_24_8_WEBGL;
-
-			}
 
 			return 0;
 
 		}
+
+
+		//Map texture format to sized internal format
+		
+
 
 	}
 
