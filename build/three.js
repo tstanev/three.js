@@ -18324,7 +18324,7 @@
 
 					}
 
-					if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) {
+					if ( textureNeedsGenerateMipmaps( texture ) ) {
 
 						_gl.generateMipmap( _gl.TEXTURE_CUBE_MAP );
 
