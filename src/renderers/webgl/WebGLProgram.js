@@ -311,12 +311,14 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 		prefixVertex = [
 
+			'#version 300 es',
+			'#define varying out',
+			'#define attribute in',
+
 			'precision ' + parameters.precision + ' float;',
 			'precision ' + parameters.precision + ' int;',
 
 			'#define SHADER_NAME ' + shader.name,
-
-			customDefines,
 
 			parameters.supportsVertexTextures ? '#define VERTEX_TEXTURES' : '',
 
@@ -416,10 +418,15 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 		prefixFragment = [
 
-			customExtensions,
+			'#version 300 es',
+			'#define varying in',
+			'#define texture2D texture',
+			'#define gl_FragColor outColor',
 
 			'precision ' + parameters.precision + ' float;',
 			'precision ' + parameters.precision + ' int;',
+
+			'out vec4 outColor;',
 
 			'#define SHADER_NAME ' + shader.name,
 
