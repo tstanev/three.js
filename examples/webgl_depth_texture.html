@@ -111,14 +111,6 @@
 
 				renderer = new THREE.WebGLRenderer( { canvas: document.querySelector( 'canvas' ) } );
 
-				if ( !renderer.extensions.get( 'WEBGL_depth_texture' ) ) {
-
-					supportsExtension = false;
-					document.querySelector( '#error' ).style.display = 'block';
-					return;
-
-				}
-
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
