@@ -286,11 +286,29 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 	var program = gl.createProgram();
 
+	var ES3_VERT_PREFIX = [
+		'#version 300 es',
+		'#define THREE_JS_WEBGL2',
+		'#define varying out',
+		'#define attribute in'
+	].join( '\n' );
+
+	var ES3_FRAG_PREFIX = [
+		'#version 300 es',
+		'#define THREE_JS_WEBGL2',
+		'#define varying in',
+		'#define texture2D texture',
+		'#define gl_FragColor outColor',
+		'out highp vec4 outColor;'
+	].join( '\n' );
+
 	var prefixVertex, prefixFragment;
 
 	if ( material.isRawShaderMaterial ) {
 
 		prefixVertex = [
+
+			ES3_VERT_PREFIX,
 
 			customDefines,
 
@@ -300,7 +318,8 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 		prefixFragment = [
 
-			customExtensions,
+			ES3_FRAG_PREFIX,
+
 			customDefines,
 
 			'\n'
@@ -311,10 +330,7 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 		prefixVertex = [
 
-			'#version 300 es',
-			'#define THREE_JS_WEBGL2',
-			'#define varying out',
-			'#define attribute in',
+			ES3_VERT_PREFIX,
 
 			'precision ' + parameters.precision + ' float;',
 			'precision ' + parameters.precision + ' int;',
@@ -419,16 +435,10 @@ function WebGLProgram( renderer, code, material, shader, parameters ) {
 
 		prefixFragment = [
 
-			'#version 300 es',
-			'#define THREE_JS_WEBGL2',
-			'#define varying in',
-			'#define texture2D texture',
-			'#define gl_FragColor outColor',
+			ES3_FRAG_PREFIX,
 
 			'precision ' + parameters.precision + ' float;',
 			'precision ' + parameters.precision + ' int;',
-
-			'out vec4 outColor;',
 
 			'#define SHADER_NAME ' + shader.name,
 
