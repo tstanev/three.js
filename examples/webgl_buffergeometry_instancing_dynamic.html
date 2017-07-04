@@ -259,12 +259,6 @@
 			var mesh = new THREE.Mesh( geometry, material );
 			scene.add( mesh );
 
-
-			if ( renderer.extensions.get( 'ANGLE_instanced_arrays' ) === false ) {
-				document.getElementById( "notSupported" ).style.display = "";
-				return;
-			}
-
 			renderer.setClearColor( 0x101010 );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.setSize( window.innerWidth, window.innerHeight );

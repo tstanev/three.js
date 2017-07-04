@@ -224,11 +224,11 @@ function WebGLRenderer( parameters ) {
 			preserveDrawingBuffer: _preserveDrawingBuffer
 		};
 
-		_gl = _context || _canvas.getContext( 'webgl', contextAttributes ) || _canvas.getContext( 'experimental-webgl', contextAttributes );
+		_gl = _context || _canvas.getContext( 'webgl2', contextAttributes );
 
 		if ( _gl === null ) {
 
-			if ( _canvas.getContext( 'webgl' ) !== null ) {
+			if ( _canvas.getContext( 'webgl2' ) !== null ) {
 
 				throw 'Error creating WebGL context with your selected attributes.';
 
@@ -262,19 +262,11 @@ function WebGLRenderer( parameters ) {
 
 	var extensions = new WebGLExtensions( _gl );
 
-	extensions.get( 'WEBGL_depth_texture' );
-	extensions.get( 'OES_texture_float' );
 	extensions.get( 'OES_texture_float_linear' );
-	extensions.get( 'OES_texture_half_float' );
 	extensions.get( 'OES_texture_half_float_linear' );
-	extensions.get( 'OES_standard_derivatives' );
-	extensions.get( 'ANGLE_instanced_arrays' );
+	extensions.get( 'EXT_color_buffer_float' );
 
-	if ( extensions.get( 'OES_element_index_uint' ) ) {
-
-		BufferGeometry.MaxIndex = 4294967296;
-
-	}
+	BufferGeometry.MaxIndex = 4294967296;
 
 	var capabilities = new WebGLCapabilities( _gl, extensions, parameters );
 
@@ -909,17 +901,6 @@ function WebGLRenderer( parameters ) {
 	};
 
 	function setupVertexAttributes( material, program, geometry, startIndex ) {
-
-		if ( geometry && geometry.isInstancedBufferGeometry ) {
-
-			if ( extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
-
-				console.error( 'THREE.WebGLRenderer.setupVertexAttributes: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-				return;
-
-			}
-
-		}
 
 		if ( startIndex === undefined ) startIndex = 0;
 
@@ -2632,6 +2613,7 @@ function WebGLRenderer( parameters ) {
 
 		}
 
+
 		state.scissor( _currentScissor );
 		state.setScissorTest( _currentScissorTest );
 
@@ -2683,7 +2665,7 @@ function WebGLRenderer( parameters ) {
 				}
 
 				if ( textureType !== UnsignedByteType && paramThreeToGL( textureType ) !== _gl.getParameter( _gl.IMPLEMENTATION_COLOR_READ_TYPE ) && // IE11, Edge and Chrome Mac < 52 (#9513)
-					! ( textureType === FloatType && ( extensions.get( 'OES_texture_float' ) || extensions.get( 'WEBGL_color_buffer_float' ) ) ) && // Chrome Mac >= 52 and Firefox
+					! ( textureType === FloatType ) && // Chrome Mac >= 52 and Firefox
 					! ( textureType === HalfFloatType && extensions.get( 'EXT_color_buffer_half_float' ) ) ) {
 
 					console.error( 'THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in UnsignedByteType or implementation defined type.' );
@@ -2750,14 +2732,8 @@ function WebGLRenderer( parameters ) {
 		if ( p === IntType ) return _gl.INT;
 		if ( p === UnsignedIntType ) return _gl.UNSIGNED_INT;
 		if ( p === FloatType ) return _gl.FLOAT;
+		if ( p === HalfFloatType ) return _gl.HALF_FLOAT;
 
-		if ( p === HalfFloatType ) {
-
-			extension = extensions.get( 'OES_texture_half_float' );
-
-			if ( extension !== null ) return extension.HALF_FLOAT_OES;
-
-		}
 
 		if ( p === AlphaFormat ) return _gl.ALPHA;
 		if ( p === RGBFormat ) return _gl.RGB;
@@ -2824,30 +2800,49 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		if ( p === MinEquation || p === MaxEquation ) {
 
-			extension = extensions.get( 'EXT_blend_minmax' );
+		if ( p === MinEquation ) return _gl.MIN;
+		if ( p === MaxEquation ) return _gl.MAX;
 
-			if ( extension !== null ) {
+		if ( p === UnsignedInt248Type ) return _gl.UNSIGNED_INT_24_8_WEBGL;
 
-				if ( p === MinEquation ) return extension.MIN_EXT;
-				if ( p === MaxEquation ) return extension.MAX_EXT;
+
+		return 0;
+
+	}
+
+
+	//Map texture format to sized internal format
+	function paramToInternal( format, type ) {
+
+		if ( format === THREE.RGBFormat ) {
+
+			switch ( type ) {
+
+				case THREE.UnsignedByteType : return _gl.RGB8;
+				case THREE.FloatType: return _gl.RGB32F;
+				case THREE.HalfFloatType: return _gl.RGB16F;
+				default: break;
+
+			}
+
+		} else if ( format === THREE.RGBAFormat ) {
+
+			switch ( type ) {
+
+				case THREE.UnsignedByteType : return _gl.RGBA8;
+				case THREE.FloatType: return _gl.RGBA32F;
+				case THREE.HalfFloatType: return _gl.RGBA16F;
+				default: break;
 
 			}
 
 		}
 
-		if ( p === UnsignedInt248Type ) {
-
-			extension = extensions.get( 'WEBGL_depth_texture' );
-
-			if ( extension !== null ) return extension.UNSIGNED_INT_24_8_WEBGL;
-
-		}
-
-		return 0;
-
+		console.error( "failed to map texture format and type to internalformat" );
+		return paramThreeToGL( format );
 	}
+
 
 }
 

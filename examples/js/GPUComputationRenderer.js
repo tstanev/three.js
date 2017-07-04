@@ -148,12 +148,6 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 
 	this.init = function() {
 
-		if ( ! renderer.extensions.get( "OES_texture_float" ) ) {
-
-			return "No OES_texture_float support for float textures.";
-
-		}
-
 		if ( renderer.capabilities.maxVertexTextures === 0 ) {
 
 			return "No support for vertex shader textures.";
@@ -355,13 +349,11 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 
 	function getPassThroughFragmentShader() {
 
-		return	"uniform sampler2D texture;\n" +
+		return	"uniform sampler2D tIn;\n" +
 				"\n" +
 				"void main() {\n" +
 				"\n" +
-				"	vec2 uv = gl_FragCoord.xy / resolution.xy;\n" +
-				"\n" +
-				"	gl_FragColor = texture2D( texture, uv );\n" +
+				"	gl_FragColor = texelFetch( tIn, ivec2(gl_FragCoord.xy), 0 );\n" +
 				"\n" +
 				"}\n";
 

@@ -38,7 +38,7 @@ THREE.TriangleBlurShader = {
 
 		"#define ITERATIONS 10.0",
 
-		"uniform sampler2D texture;",
+		"uniform sampler2D tIn;",
 		"uniform vec2 delta;",
 
 		"varying vec2 vUv;",
@@ -58,7 +58,7 @@ THREE.TriangleBlurShader = {
 				"float percent = ( t + offset - 0.5 ) / ITERATIONS;",
 				"float weight = 1.0 - abs( percent );",
 
-				"color += texture2D( texture, vUv + delta * percent ) * weight;",
+				"color += texture2D( tIn, vUv + delta * percent ) * weight;",
 				"total += weight;",
 
 			"}",
