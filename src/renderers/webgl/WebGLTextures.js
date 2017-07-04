@@ -146,6 +146,17 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 
 			}
 
+		} else if ( format === THREE.AlphaFormat ) {
+
+			switch ( type ) {
+
+				case THREE.UnsignedByteType : return _gl.R8;
+				case THREE.FloatType: return _gl.R32F;
+				case THREE.HalfFloatType: return _gl.R16F;
+				default: break;
+
+			}
+
 		}
 
 		console.error( "failed to map texture format and type to internalformat" );
