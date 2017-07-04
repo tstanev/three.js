@@ -109,7 +109,7 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 	camera.position.z = 1;
 
 	var passThruUniforms = {
-		texture: { value: null }
+		tIn: { value: null }
 	};
 
 	var passThruShader = createShaderMaterial( getPassThroughFragmentShader(), passThruUniforms );
