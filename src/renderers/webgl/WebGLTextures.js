@@ -142,6 +142,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, paramT
 			switch ( type ) {
 
 				case THREE.FloatType: return _gl.DEPTH_COMPONENT32F;
+				case THREE.UnsignedShortType: return _gl.DEPTH_COMPONENT16;
 				default: break;
 
 			}
