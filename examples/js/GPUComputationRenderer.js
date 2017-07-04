@@ -319,11 +319,11 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 		// input = Texture
 		// output = RenderTarget
 
-		passThruUniforms.texture.value = input;
+		passThruUniforms.tIn.value = input;
 
 		this.doRenderTarget( passThruShader, output);
 
-		passThruUniforms.texture.value = null;
+		passThruUniforms.tIn.value = null;
 
 	};
 
